@@ -10,11 +10,11 @@ id.demo <- readline('press [1] or [2] to choose between them, or press anything 
 
 
 if (id.demo == '1'){
-	source('ions_demo.R')
+	source('./Demos/ions_demo.R', chdir=T)
 }
 
 if (id.demo == '2'){
-	source('HH_demo.R')
+	source('./Demos/HH_demo.R', chdir=T)
 }
 
 
