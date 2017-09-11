@@ -1,5 +1,5 @@
 #############################################################
-## demo for simulating the buildup of the equilibrium potential in a simple neuron
+## demo for simulating the Hodgkin-Huxley equations
 
 source('HH_sim.R')
 

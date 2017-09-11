@@ -6,6 +6,7 @@
 cat('there are two simulations in this demo:\n')
 cat('1: membrane potential \n')
 cat('2: Hodgkin-Huxley equations \n')
+id.demo <- 1
 id.demo <- readline('press [1] or [2] to choose between them, or press anything else to quit \n')
 
 

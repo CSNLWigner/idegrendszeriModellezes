@@ -12,6 +12,8 @@ a <- 4*r^2*pi # surface area in cm2
 ## electric properties
 Cm <- 1 # membrane capacitance per unit area in  uF/cm2
 cm <- Cm * a # membrane capacitance, uF
+cm.default <- cm
+
 
 gK.unit=0.36 # membrane conductance per unit area - in mS/cm2
 gK=gK.unit * a # membrane conductance, mS

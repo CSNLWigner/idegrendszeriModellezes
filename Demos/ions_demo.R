@@ -24,7 +24,7 @@ if (id.sim == '1'){
 	while (i.run  %in% c('Y', 'y')){
 		
 		## simulation
-		params <- c(gK=gK, cm=cm, vi-vi, ve=ve)
+		params <- c(gK=gK, cm=cm, vi=vi, ve=ve)
 		state <- c(v=0, C.Ki=C.Ki.init, C.Ke=C.Ke.init)
 		
 		times <-  seq(0,30, by=1/10)
@@ -46,11 +46,11 @@ if (id.sim == '1'){
 		i.run <- readline('do you want to rerun it with different parameters [Y or N]?')
 		if (i.run %in% c('Y', 'y')){
 			gK.new <- as.numeric(readline(paste('set new value for gK (default = ', gK.default, '):')))
-			if (!(is.na(gK.new))) gK <- gK.new
+			if (!(is.na(gK.new))) gK <- gK.new else gK <- gK.default
 			cm.new <- as.numeric(readline(paste('set new value for cm (default = ', cm.default, '):')))
-			if (!(is.na(cm.new))) cm <- cm.new			
+			if (!(is.na(cm.new))) cm <- cm.new	else cm <- cm.default
 			C.Ki.init.new <- as.numeric(readline(paste('set new value for C.Ki.init (default = ', C.Ki.default, '):')))
-			if (!(is.na(C.Ki.init.new))) C.Ki.init <- C.Ki.init.new
+			if (!(is.na(C.Ki.init.new))) C.Ki.init <- C.Ki.init.new else C.Ki.init <- C.Ki.default
 		}
 	}
 }
@@ -89,10 +89,10 @@ if (id.sim == '2'){
 		i.run <- readline('do you want to rerun it with different parameters [Y or N]?')
 		if (i.run %in% c('Y', 'y')){
 			gK.new <- as.numeric(readline(paste('set new value for gK (default = ', gK.default, '):')))
-			if (!(is.na(gK.new))) gK <- gK.new
+			if (!(is.na(gK.new))) gK <- gK.new else gK <- gK.default
 			
 			gNa.new <- as.numeric(readline(paste('set new value for gNa (default = ', gNa.default, '):')))
-			if (!(is.na(gNa.new))) gNa <- gNa.new
+			if (!(is.na(gNa.new))) gNa <- gNa.new else gNa <- gNa.default
 		}
 		
 	}	
