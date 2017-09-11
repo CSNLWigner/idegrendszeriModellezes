@@ -4,7 +4,7 @@
 isa <- require(deSolve)
 if(isa=='FALSE') {
 	install.packages('deSolve')
-	require(mvtnorm)
+	require(deSolve)
 }
 
 #############################################
