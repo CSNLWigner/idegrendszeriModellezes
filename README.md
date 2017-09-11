@@ -9,13 +9,10 @@ The modelling excercices are centered around 'demos'. Each demo explores a parti
 
 To quickly get to the exercices run the corresponding demo (e.g., HH_demo.Rmd) in Rstudio (https://www.rstudio.com)
 
-or the file 'run_demo.R' to run the demos in R (https://www.r-project.org).
-
-
-Demos are in the 'Demos' folder. Each demo has three separate R files with the following structure:
-* xxx_demo.R: interface for the demo. Sets the parameters, runs the simulations and plots the result. 
+Demos are defined in the 'Demos' folder. Each demo has three separate R files with the following structure:
 * xxx_sim.R: defines the simulations.
 * xxx_consts.R: defining constants.
+* (xxx_demo.R: Only if you don't use RStudio. Interface for the demo. Sets the parameters, runs the simulations and plots the result.) 
 
 Currently there are two demos implemented:
 * Nernst equation and membrane potential 
