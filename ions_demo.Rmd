@@ -2,7 +2,9 @@
 title: "Ions demo"
 author: "Balazs B Ujfalussy"
 date: "11/09/2017"
-output: html_document
+output:
+  pdf_document: default
+  html_document: default
 ---
 
 This is a demo for simulating the buildup of the equilibrium potential in a simple neuron. We use the package [deSolve](http://desolve.r-forge.r-project.org) to simulate the differential equations.
