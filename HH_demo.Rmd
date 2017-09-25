@@ -20,7 +20,7 @@ We use the package [deSolve](http://desolve.r-forge.r-project.org) to simulate t
 
 ## 1. simulation with constant input
 
-Constant current is injected in a neuron of 20 um diameter with Hodgkin-Huxley channels. Try to change the injected current and find the AP threshold!
+Constant current is injected in a neuron of 20 $\mu$m diameter with Hodgkin-Huxley channels. Try to change the injected current and find the AP threshold!
 
 ```{r}
 I0 <- 1/20/1000 # change this to change the input current!
@@ -69,7 +69,7 @@ axis(1); axis(2, las=2)
 
 ## 2. simulation with a short current pulse
 
-Short (2 ms) current pulse is injected in a neuron of 20 um diameter with Hodgkin-Huxley Na and K channels. Try to change the current pulse amplitude and find the AP threshold! Try also negative currents, or trains of pulses!
+Short (2 ms) current pulse is injected in a neuron of 20 $\mu$m diameter with Hodgkin-Huxley Na and K channels. Try to change the current pulse amplitude and find the AP threshold! Try also negative currents, or trains of pulses!
 
 
 ```{r}
