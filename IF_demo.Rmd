@@ -9,12 +9,16 @@ output:
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+This is a demo for illustrating the response of different neuronal models to somatic current injections. 
+
+```{r, message=FALSE, warning=FALSE}
 source('demos/IF_sim.R', chdir=T)
 source('demos/Izhikevich_sim.R', chdir=T)
 source('demos/HH_sim.R', chdir=T)
 ```
-
-This is a demo for illustrating the response of different neuronal models to somatic current injections. 
 
 The models are compared with experimental data from *The quantitative single-neuron modeling competition*. In this experiments a cortical pyramidal neuron was stimulated by injection of randomly fluctuating currents of various amplitudes. Current was injected and voltage responses were recorded at the soma. For more details, see Fig. 1 of Jolivet et al., **The quantitative single-neuron modeling competition** Biol Cybern (2008) 99:417–426. 
 

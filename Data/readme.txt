@@ -1,12 +1,7 @@
 ## Datasets for the computational neuroscience course
 ## 
 ## Jolivet:
-## Data from the The quantitative single-neuron modeling competition - 
-## Biol Cybern (2008) 99:417–426
-## Challenge A 2007. (see Fig 1a of the paper)
-## A cortical pyramidal neuron was stimulated by injection of randomly fluctuating 
-## currents of various amplitudes. Current was injected and voltage responses 
-## were recorded at the soma.
+## 	
 
 # Jolivet_stim.RData contains a single matrix 'stim' with 32 rows, each being the injected current (in pA) of a single experiment
 # Jolivet_resp.RData contains a single matrix 'resp', with 32 rows, each being the voltage recorded at the soma (mV)

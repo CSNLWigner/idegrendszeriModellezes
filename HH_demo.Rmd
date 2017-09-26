@@ -9,12 +9,16 @@ output:
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
-source('demos/HH_sim.R', chdir=T)
 ```
+
 
 This is a demo for simulating simulating the Hodgkin-Huxley equations. There are two simulations in this demo:
 1: constant current
 2: current pulses
+
+```{r, message=FALSE, warning=FALSE}
+source('demos/HH_sim.R', chdir=T)
+```
 
 We use the package [deSolve](http://desolve.r-forge.r-project.org) to simulate the differential equations.
 
@@ -95,7 +99,7 @@ out2 <- ode(y = state, times = times, func = sim.HH, parms = params) ## solving 
 
 Now plot the results...
 
-```{r, echo=FALSE}
+```{r, fig.width=4, fig.height=3, echo=FALSE}
 layout(matrix(c(1,2), 2), 1, c(5, 3))
 par(mar=c(1,4,1,1))
 plot(out2[,1], out2[,2], ylim=c(-80, 40), axes=F, xlab="", ylab="membrane potential (mV)", t="l"); axis(2, las=2)
