@@ -25,8 +25,8 @@ The models are compared with experimental data from *The quantitative single-neu
 The experimental data is loaded from the `Data` folder - Jolivet_resp.RData and `Jolivet_stim.RData`. First we load the data and hen plot a short example of it.
 
 ```{r}
-load("Data/Jolivet_stim.RData")
-load("Data/Jolivet_resp.RData")
+load("Data/Jolivet/Jolivet_stim.RData")
+load("Data/Jolivet/Jolivet_resp.RData")
 matplot(t(resp[1:4+4,3000:4000] - c(0, 1, 2, 3)*100), t="l", lty=1, axes=F, xlab="time (ms)", ylab="voltage (mV)"); axis(1); axis(2, c(-350, -325, -300, -257), c(-50, -25, 0, 25), las=2)
 ```
 

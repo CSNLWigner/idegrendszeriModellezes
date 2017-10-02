@@ -1,0 +1,117 @@
+---
+title: "Coding"
+author: "Balazs B Ujfalussy"
+date: "2/10/2017"
+output:
+  pdf_document: default
+  html_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+This is a demo for illustrating the Poisson firing of visual cortical neurons in response to grating stimuli. The data is from Ecker et al., *Decorrelated Neuronal Firing in Cortical Microcircuits*, Science,  327, 584 (2010). http://bethgelab.org/datasets/v1gratings/
+
+Licensed under a Creative Commons Attribution-NonCommercial-NoDerivs 3.0 For details, see http://creativecommons.org/licenses/by-nc-nd/3.0/
+
+The RData file contains a list containing 8 preselected cells (>1 Hz firing rates, clear spikes) from a single experiment in given day. The fields of the list contain the following:
+
+date              date and time stamp when the session was recorded
+subject           identifies the monkey used in the session
+conditions        specifies the orientation and contrast used, selected for > 0.05
+contamination     contamination of the single units
+tetrode           specifies the tetrode a single unit was recorded on; for tetrode grid layout, see supplementary material of Ecker et al. (2010)
+spikes            contains binned spikes single units x conditions x time bins x repetitions
+times             times aligned to bin centers
+
+The experimental data is loaded from the `Data/Ecker/` folder - data_v1_binned_static_ses2.RData. First we load the data and see what it contains using the summary command:
+
+```{r}
+load("Data/Ecker/data_v1_binned_static_ses2.RData")
+summary(data)
+```
+
+
+The spikes field contains an array with the spikes recorded: cells x conditions x time bins x repetitions.
+```{r}
+print(dim(data$spikes))
+```
+We have 8 cells, 16 conditons, 90 time points and 24 repetitions. To see the different conditions we need to look the field conditions:
+```{r}
+print(data$conditions)
+```
+
+The are two variables for condition: orientation and contrast. We have 8 orientations and 2 contrast levels. Now we will plot the average response of the cells to the different stimuli. 
+
+First, we extract contrast and orientation variables for plotting.
+```{r}
+oris <- unlist(data$condition['orientation',])
+contrasts <- unlist(data$condition['contrast',])
+range.contrasts <- range(contrasts)
+scaled.contrasts <- (contrasts - min(contrasts)) / (max(contrasts)-min(contrasts)) * 2 + 1/2
+```
+
+Next, we extract the firing rate - approximated as the average spike count - for each time point:
+
+```{r}
+n.cells <- dim(data$spikes)[1] # number of cells
+n.conditions <- dim(data$spikes)[2] # number of conditions
+L <- dim(data$spikes)[3] # length of recordings
+par(mfcol=c(2,4)); par(mar=c(3,3,1,1)) # plotting subfigures
+for (i.cell in 1:n.cells){
+	rates <- matrix(0, L, n.conditions) # this is going to be the rate matrix for the cells
+	for (i.condition in 1:n.conditions){
+		sp <- data$spikes[i.cell,i.condition,,]
+		rates[,i.condition] <- apply(sp, 1, mean)*100 # Hz
+	}
+	matplot(data$times, rates, t="l", col=rainbow(180)[oris], lty=1, lwd=scaled.contrasts, axes=F, ylim=c(0, 200))
+	abline(h=0)
+	if ((i.cell %% 2) == 0){
+	  axis(1); mtext('time (ms)', 1, 2, cex=0.7)
+	}
+	if (i.cell < 3){
+	  axis(2); mtext('firing rate (Hz)', 2, 2, cex=0.7)
+	}
+	# readline(i.cell)
+}
+
+legend('topright', leg=unique(oris), col=rainbow(180)[unique(oris)], lwd=2, lty=1, bty='n')
+
+```
+
+Now I select cell 7 which seems as an active cell showing stimulus-dependent responses. I will plot its activity - spike train - in each trial separately. I first plot the second condition, which is 0 degrees orientation and 10 contrast:
+
+```{r}
+source("Data/Ecker/plot_raster.R")
+cell <- data$spikes[7,,,]
+plot.raster(cell[2,,], data$times)
+```
+
+
+What you need to observe here is that spiking is variable - the number of spikes in any given trial is different, and varies between `r min(colSums(cell[2,,]))` and `r max(colSums(cell[2,,]))`. Note, that the stimulus is identical in each of these trials! Also note, that there is activity before and after the stimulus is on!
+
+
+```{r}
+hist(colSums(cell[2,,]), xlab='spike count', main='0 orientation and 10 contrast')
+```
+
+Now let's see the response to all different conditions - 8 orientations at different 2 contrast levels. First two rows are the low contrast, below are the high contrast stimuli:
+
+```{r}
+par(mfrow=c(4,4)); par(mar=c(3,3,1,1))
+for (i in seq(1, 15, by=2)){
+  plot.raster(cell[i,,], data$times)
+}
+for (i in seq(2, 16, by=2)){
+  plot.raster(cell[i,,], data$times)
+}
+```
+
+
+
+# Homework
+
+Estimate the amount of variability in each of the 16 different conditions. Calculate the mean spike count, the variance and the Fano factor (https://en.wikipedia.org/wiki/Fano_factor). You need the following functions to do it: apply(), mean(), var(). Is the variability you observe consistent with Poisson firing? If not, why not? What if you focus on a short period (200 ms) before or after the stimulus onset?
+
