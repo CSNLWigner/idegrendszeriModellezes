@@ -45,7 +45,7 @@ The are two variables for condition: orientation and contrast. We have 8 orienta
 
 First, we extract contrast and orientation variables for plotting, and the firing rate - approximated as the average spike count - for each time point:
 
-```{r, echo=FALSE, fig.height=4, fig.width=7}
+```{r, echo=TRUE, fig.height=4, fig.width=7}
 high.contrast <- data$conditions['contrast',] == 10
 data$spikes <- data$spikes[,high.contrast,,]
 data$conditions <- unlist(data$conditions['orientation',high.contrast])
@@ -115,7 +115,7 @@ The variance is typically higher than the mean - so the spike count distribution
 N <- dim(counts)[3]
 N.train <- 14
 N.test <- N - N.train
-set.seed(417)
+set.seed(410)
 i.train <- sort(sample(1:N, N.train))
 i.test <- which(!(1:N %in% i.train))
 
