@@ -29,7 +29,7 @@ times             times aligned to bin centers
 The experimental data is loaded from the `Data/Ecker/` folder - data_v1_binned_static_ses2.RData. First we load the data and see what it contains using the summary command:
 
 ```{r}
-load("Data/Ecker/data_v1_binned_static_ses2.RData")
+load("./Ecker/data_v1_binned_static_ses2.RData")
 summary(data)
 ```
 
@@ -84,7 +84,7 @@ legend('topright', leg=unique(oris), col=rainbow(180)[unique(oris)], lwd=2, lty=
 Now I select cell 7 which seems as an active cell showing stimulus-dependent responses. I will plot its activity - spike train - in each trial separately. I first plot the second condition, which is 0 degrees orientation and 10 contrast:
 
 ```{r}
-source("Data/Ecker/plot_raster.R")
+source("./Ecker/plot_raster.R")
 cell <- data$spikes[7,,,]
 plot.raster(cell[2,,], data$times)
 ```

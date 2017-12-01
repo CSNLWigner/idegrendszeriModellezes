@@ -29,7 +29,7 @@ times             times aligned to bin centers
 The experimental data is loaded from the `Data/Ecker/` folder - data_v1_binned_static_ses2.RData. First we load the data and see what it contains using the summary command:
 
 ```{r}
-load("Data/Ecker/data_v1_binned_static_ses2.RData")
+load("./Ecker/data_v1_binned_static_ses2.RData")
 summary(data)
 ```
 

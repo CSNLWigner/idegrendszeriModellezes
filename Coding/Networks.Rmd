@@ -146,7 +146,7 @@ matplot(t, resp0, t="l", col=3, lty=c(1,3), add=T)
 Assume you have a linear network with the follwing weight matrix: 
 
 ```{r, out.width = "40%", echo=FALSE}
-include_graphics('./Demos/homeWork.png')
+include_graphics('./homeWork.png')
 ```
 
 * What is the activity of the network started from various initial conditions in the absence of external input? How does it react to external inputs?

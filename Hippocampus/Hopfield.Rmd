@@ -29,8 +29,6 @@ Important concepts:
 We will use a standard binary Hopfield network: each neuron has two state, 0 and 1. The sparseness of the patterns defines the proportion of 1s in the data, which is defined by the parameter `f`. We will have $32 \cdot 32 = 1024$ neurons, and will store $M$ patterns. 
 
 ```{r}
-library(gplots)
-
 f <- 0.5 # the sparseness of the representation: percent of 
 sig2.w <- f^2 - 2*f^3 + f^4 # the varinace of the weights after storing a single pattern
 N <- 1024 # number of neurons
@@ -46,11 +44,11 @@ The first 2 patterns are meaningful images - these patterns do not differ from t
 ```{r, fig.cap='The first 8 stored patterns', fig.width=6.5, fig.height=3}
 library(png)
 ims <- array(NA, dim=c(2, 32, 32))
-imnames <- list.files('Demos/Figs32/')
+imnames <- list.files('./Figs32/')
 par(mfcol=c(2,4)) # two rows, 4 columns
 par(mar=c(1,1,1,1)) # small margos
 for (i.image in 1:2){
-	imname <- paste('Demos/Figs32/', imnames[i.image], sep='')
+	imname <- paste('./Figs32/', imnames[i.image], sep='')
 	im1 <- readPNG(imname)
 	for (i in 1:32){
 		for (j in 1:32){

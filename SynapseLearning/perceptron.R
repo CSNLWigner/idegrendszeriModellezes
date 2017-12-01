@@ -89,7 +89,13 @@ train.perceptron <- function(w.init, patterns, target, Tmax=10, graphics=T){
 
 ## two layer perceptron
 train.perceptron.2L <- function(w.in, w.out, patterns, target, Tmax=50, graphics=T){
-	n.patterns <- nrow(patterns)
+  # w.in  - initial input weights
+  # w.out - initial output weights
+  # patterns - patterns to classify (rows: different points, columns: dimensionality)
+  # target: the target classification
+  # Tmax: number of steps for training
+  # graphics: T or F, whether or not to plot the results
+  n.patterns <- nrow(patterns)
 	n.inputs <- ncol(patterns)
 	n.hidden <- length(w.out)-1
 	if (graphics){

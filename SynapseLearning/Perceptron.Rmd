@@ -20,13 +20,13 @@ This is a demo for illustrating the calssification by a single neuron - now call
 Here we will use a randomly chosen neuron, a teacher, to define the target classification for another neuron, the student. This choice gurantees that the problem is learnable. 
 
 ```{r, message=FALSE, warning=FALSE}
-source('Demos/perceptron.R', chdir=T)
+source('./perceptron.R', chdir=T)
 set.seed(14) # initialising random seed
 n.input <- 2 # number of presynaptic neurons - the dimensionality of the problem
 n.patterns <- 200 # total number of patterns
 e <- 10
 
-## input patterns
+## input patterns: a matrix of 200x3. First and second column are Gaussian rundom numbers. The third is 1 - it corresponds to the bias of the neurons
 patterns <- cbind(matrix(rnorm(n.input*n.patterns), n.patterns), rep(1, n.patterns)) 
 ## the teacher - random initializaton:
 ww <- rnorm(3)

@@ -17,7 +17,7 @@ This is a demo for illustrating the response of integrate and fire neurons to sy
 We first simulate the net presynaptic spike train.
 
 ```{r, message=FALSE, warning=FALSE}
-source('demos/IF_sim.R', chdir=T)
+source('../Biophys/IF_sim.R', chdir=T)
 ```
 
 

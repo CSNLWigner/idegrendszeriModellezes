@@ -3,27 +3,30 @@
 Modelling and data analysis exercices for the computational neuroscience course
 http://cneuro.rmki.kfki.hu/education/neuromodel
 
-1. The modelling exercices
 
-The modelling excercices are centered around 'demos'. Each demo explores a particular neuronal phenomenon. 
+Exercices are organised in 4 folders, corresponding to the 4 blocks of the course. You need to complete 1 exercise per block.
 
-To quickly get to the exercices run the corresponding demo (e.g., HH_demo.Rmd) in Rstudio (https://www.rstudio.com)
+Each exercise is an R Markdown file - with extension Rmd. You can also view the pdf, which contains the R code and the description of the problem.
 
-Demos are defined in the 'Demos' folder. Each demo has three separate R files with the following structure:
-* xxx_sim.R: defines the simulations.
-* xxx_consts.R: defining constants.
-* (xxx_demo.R: Only if you don't use RStudio. Interface for the demo. Sets the parameters, runs the simulations and plots the result.) 
+To complete the exercise, read the problem, perform the simulation/analysis, interpret the results and submit a single pdf file.
 
-Currently there are two demos implemented:
-* Nernst equation and membrane potential 
-* Hodgkin-Huxley equations
+1. Biophysics
 
+* ions_demo.RMD: Nernst equation and membrane potential 
+* HH_demo.Rmd: excitability of the Hodgkin-Huxley model
+* IF_demo.Rmd: simplified neuron models
 
-2. Data analysis exercices
+2. Coding
 
-Data are in the Data folder, the analysis scripts are in the Analysis folder, and they begin with the same name. To start exploring the data, run the corresponding script in the analysis folder. We have the following data:
+* Coding_demo.Rmd: Variability of neuronal responses
+* Decoding_demo.Rmd: Bayesian decoding
+* Networks.Rmd: dynamics of balanced networks
 
-* Single neuron somatic current injection experiment from Judit Makara - the original, 50 000 Hz sampling rate
-* Single neuron somatic current injection experiment from Judit Makara - reduced, 5 000 Hz sampling rate
+3. Synapse - Learning
 
+* Relyability_demo.Rmd: estimating the effect of synaptic (un)reliability
+* Perceptron.Rmd: classification with the perceptron - overfitting and cross-validation
 
+4. Hippocampus
+
+* Hopfield.Rmd: energy function, capacity and biological realstic memory networks

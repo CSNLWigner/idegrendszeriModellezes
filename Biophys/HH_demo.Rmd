@@ -17,7 +17,7 @@ This is a demo for simulating simulating the Hodgkin-Huxley equations. There are
 2: current pulses
 
 ```{r, message=FALSE, warning=FALSE}
-source('demos/HH_sim.R', chdir=T)
+source('./HH_sim.R', chdir=T)
 ```
 
 We use the package [deSolve](http://desolve.r-forge.r-project.org) to simulate the differential equations.

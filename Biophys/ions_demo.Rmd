@@ -14,7 +14,7 @@ knitr::opts_chunk$set(echo = TRUE)
 This is a demo for simulating the buildup of the equilibrium potential in a simple neuron. We use the package [deSolve](http://desolve.r-forge.r-project.org) to simulate the differential equations.
 
 ```{r, message=FALSE, warning=FALSE}
-source('demos/ions_sim.R', chdir=T)
+source('./ions_sim.R', chdir=T)
 ```
 
 Both electric and chemical changes are simulated. The goal is to compare the time course and magnitude of the changes under different conditions.
