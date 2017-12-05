@@ -196,7 +196,15 @@ So the performance of the decoder is $\theta =$`r round(LL)`, which means that t
 
 # Homework problem
 
-Evaluate the performance of the decoder in the case of two neurons, e.g., neuron 4 and neuron 7.
+Evaluate the performance of the decoder in the case of observing the spikes of two neurons at the same time, e.g., neuron 4 and neuron 7. 
+
+* What is the form of the likelihood function?
+* How do ou write the posterior from Bayes rule?
+* Calculate the parameters of your model based on some training data!
+* Evaluate the log likelihood ($\theta$) on test data!
+* Compare it with the appropriately chosen chance level!
+
+
 
 
 
