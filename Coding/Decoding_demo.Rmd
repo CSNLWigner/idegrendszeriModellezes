@@ -109,7 +109,7 @@ legend('bottomright', leg=paste('cell', 1:8), pch=16:18, col=rainbow(8), bty='n'
 abline(0, 1)
 ```
 
-The variance is typically higher than the mean - so the spike count distribution does not look like it was coming from a Poisson distribution, we conclude that the errors are not too large. We will now perform Bayesian decoding based on the activity of  cell 7. We use 14 randomly selected trials for training and the rest 10 trials for test, and estimate $\lambda$ as the mean spike count for the training trials of a given orientation.
+The variance is typically higher than the mean - so the spike count distribution does not look like if it was coming from a Poisson distribution. Still, we conclude that the errors are not too large. We will now perform Bayesian decoding based on the activity of cell 7. We use 14 randomly selected trials for training and the rest 10 trials for test, and estimate $\lambda$ as the mean spike count for the training trials of a given orientation.
 
 ```{r, echo=FALSE, fig.height=3, fig.width=6}
 N <- dim(counts)[3]
@@ -146,17 +146,17 @@ decode.Pois <- function(lambda, r){
   normalised.post <- post / sum(post)
   normalised.post
 }
-
+i.test.trial <- 5
 ```
 
-Now, I illustrate Bayesian decoding in the case of the third trial for the second orientation, which contains `r test.7[2,3]` spikes. 
+Now, I illustrate Bayesian decoding in the case of trial `r i.test.trial` for the second orientation, which contains `r test.7[2,4]` spikes. 
 
 ```{r, echo=FALSE, fig.height=3, fig.width=6}
-post <- decode.Pois(lambda, test.7[2,3])
+post <- decode.Pois(lambda, test.7[2,i.test.trial])
 par(mar=c(4,4,1,4))
 matplot(oris, train.7+runif(112, -0.5, 0.5), pch=1, col=1, xlab='orientation', ylab='cell 7 spike count', axes=F, xlim=c(-20, 240))
 lines(oris, lambda, lwd=2)
-points(oris[2], test.7[2,3], pch=16, col=2)
+points(oris[2], test.7[2,i.test.trial], pch=16, col=2)
 lines(oris, post*20, col=2, lwd=2)
 axis(1, oris, oris); axis(2, las=2); axis(4, c(0, 10, 20), c(0, 1/2, 1), col=2)
 mtext('probability', 4, 2, col=2)
@@ -171,7 +171,7 @@ There are a couple of important observation to make:
 * The result of the decoding is not a single orientation. 
 * The result of the decoding is a probability distribution, shown by the red line. Several different orientations are consistent with the data, observing `r test.7[2,3]` spikes. The posterior quantifies exactly this: what is the probability that a particular orientation underlies the stimulus.
 * The posterior has two peaks - we can not decide between two orientations, that look almost equally likely.
-* If required, we can easily return an orientation: the most likely, of the one, that minimises certain error function.
+* If required, we can easily return an orientation: the most likely, or the one, that minimises certain error function.
 
 # Performance of the decoder
 
@@ -192,7 +192,7 @@ for (i.ori in 1:8){
 
 ```
 
-So the performance of the decoder is $\theta =$`r round(LL)`, which means that the probability that for all test data it will provide the right answer is $e^\theta$. Now we evaluate it for an average stimulus. We had 80 test data altogether, so the average log likelihood was $\theta/80=$`r round(LL/80, 2)`, which is correct with probability `r round(exp(LL/80), 2)`. For 8 orientations, the chance decoder would be correct with probability $1/8=0.125$. Not too much, but we only used a single neuron.
+So the performance of the decoder is $\theta =$`r round(LL)`, which means that the probability that for all test data it will provide the right answer is $e^\theta$. Now we evaluate it for an average stimulus. We had 80 test data altogether, so the average log likelihood was $\theta/80=$`r round(LL/80, 2)`, which is correct with probability `r round(exp(LL/80), 2)`. For 8 orientations, the chance decoder would be correct with probability $1/8=0.125$. The performance of our decoder is thus higher than chance. The gain is not too much, but we only used a single neuron.
 
 # Homework problem
 
