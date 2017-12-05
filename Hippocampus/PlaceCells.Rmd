@@ -68,13 +68,13 @@ x.mids <- round(x.breaks[-1] - dx/2, 3)
 
 `act.runs` is an array with the spikes of each cell on each trial with spatial resolution dx. Its dimensions are {number of cells} x {distance} x {trials}. The last neuron is not a true neuron, but stores the time (in seconds) the rat spent at each location at each trial. We only analyse the up runs here.
 
-```{r}
-act.runs <- cell.act.runs(spt, pos, i.runs=rat$iruns.up, dx=0.05, MazeRange=rat$MazeRange, cell.IDs=rat$PyrIDs)
+```{r, cache=TRUE}
+act.runs <- cell.maps.runs(spt, pos, i.runs=rat$iruns.up, dx=0.05, MazeRange=rat$MazeRange, cell.IDs=rat$PyrIDs)
 ```
 
 
 We divide spike count with the occupancy time to get firing rates, and plot the firing rate of all cells in the function of distance.
-```{r}
+```{r, fig.cap='Ratemap of all pyramida cells.'}
 ratemaps.t <- apply(act.runs[1:120,,], c(1,2), sum)
 Tmap <- apply(act.runs[121,,], 1, sum)
 
@@ -83,12 +83,20 @@ matplot(x.mids, ratemaps.all, t='l', lty=1, col=rainbow(120), xlab='x position (
 ```
 
 Next, plot firing rates of two example neurons estimated on individual runs - we still need to divide with occupancy time!
-```{r}
-par(mfcol=c(1,2))
-image(x.mids, 1:42, act.runs[11,,] / act.runs[121,,], col=viridis(24), xlab='x position (m)', ylab='trial')
-image(x.mids, 1:42, act.runs[26,,] / act.runs[121,,], col=viridis(24), xlab='x position (m)', ylab='trial')
+
+
+```{r, fig.cap='Firing rates on individual trials for two neurons. The left cell looks like a classical place cell, the right starts to fire only after the 30th run.'}
+par(mfcol=c(1,2)); par(mar=c(4,4,4,4))
+image(x.mids, 1:42, act.runs[70,,] / act.runs[121,,], col=viridis(24), xlab='x position (m)', ylab='trial', main='', ylim=c(0, 42))
+lines(x.mids, ratemaps.all[,70], col=viridis(3)[3], lwd=2)
+axis(4, c(0, 5, 10), c(0, 5, 10))
+mtext('firing rate (Hz)', 4, 2, adj=0)
+image(x.mids, 1:42, act.runs[97,,] / act.runs[121,,], col=viridis(24), xlab='x position (m)', ylab='trial', main='', ylim=c(0, 42))
+lines(x.mids, ratemaps.all[,70], col=viridis(3)[3], lwd=2)
+axis(4, c(0, 5, 10), c(0, 5, 10))
+mtext('firing rate (Hz)', 4, 2, adj=0)
 ```
-The left cell looks like a classical place cell, the right starts to fire only after the 30th run.
+
 
 Finally plot the ratemap of all active cells - sorted according to the position of the peak.
 
@@ -97,20 +105,52 @@ i.cells.active <- which(apply(ratemaps.all, 2, max) > 5)
 ratemaps <- ratemaps.all[,i.cells.active]
 ii.maxs <- apply(ratemaps, 2, which.max)
 sort.peaks <- sort(ii.maxs, ind=T)$ix
+```
+
+```{r, fig.cap='Place cells sorted according to their peak firing rate'}
 par(mfcol=c(1,2))
 matplot(ratemaps[,sort.peaks], t='l', lty=1, col=rainbow(60), xlab='x position (m)', ylab='firing rate (Hz)')
 image(ratemaps[,sort.peaks], col=viridis(24), xlab='x position (m)', ylab='trial')
 ```
 
-Now we will do static decoding of place cell activity. We prepare two datasets, a training and a test dataset, each containing $\mathbf{s}$ spike counts of the `r length(i.cells.active)` active cells and the location of the animal $x$. We can learn the relationship between $\mathbf{s}$ and $x$ using the training data. Then we can predict the position $x$ from the spikes $\mathbf{s}$.
+## Homework 1 - reliability
+
+Calculate the information rate (bits/spike) for all place cells, which is defined in Skaggs et al.: An information theoretic approach to deciphering the hippocampal code. 1993 as:
+
+$I = \sum_x r(x)\, P(x) \log \frac{r(x)}{\hat{r}}$
+
+where $r(x)$ is the firing rate of the cell as the function of position, $\hat{r} = \sum_x P(x)\,r(x)$ is the mean firing rate and $P(x)$ is the estimated probability of being at position $x$. $I$ is measured in bits/second (if a base 2 logarithm is taken).
+
+Calculate the above quantity for the place cells. Compare it with their activity map. Do you think that cells with higher information rate are more informative about the location of the animal? 
+
+What is the information rate of the two cells shown in Fig. 2? Does the difference in their information rate reflets the striking difference in their behaviour? What other measure would you use to discriminate the left and the right cell in Fig. 2? Implement it and show how it works (or describe why it fails)!
 
 
-## Homework 1 - decoding
+## Homework 2 - decoding
 
 
-Predict the position $x$ from the spikes $\mathbf{s}$ in the test set - `test.spikes`.
+Now we will do static decoding of place cell activity. First, we need the spike patterns and the position in temporal bins of 0.1 second width. Note, that now we analyse the same dataset in temporal windows. Before we analysed it in spatial windows. The function `pop.act.t` will return the population activity during the run sessions in approximately 100 ms time windows. This will take some time (~1 min on my computer), but you will be able to follow the progress of the algorithm.
 
-## Homework 2 - reliability
+```{r, cache=TRUE}
+all.data <- pop.act.t(spt, pos, i.runs=rat$iruns.up, dt=0.1, cell.IDs=rat$PyrIDs[i.cells.active])
+summary(all.data)
+```
 
-Calculate the information rate (bits/spike) for all place cells. Is this a useful measure? Does it reflect the reliability of the cells? What else would you use to discriminate proper place cells and cells that fired only a coulpe of times at a given location?
+The list `all.data` contains two variables: `pos` is a vector, with the $x$ position and `popact` is a matrix with the population activity. Each row in `all.data$popact` is a cell and each column shows the spike counts $\mathbf{s}$ in the given time bin. We have `r length(all.data$pos)` time points.
 
+
+We prepare two datasets, a training and a test dataset, each containing the spike counts of the `r length(i.cells.active)` active cells and the location of the animal $x$. We will randomly select 2000 time points for training and the rest for testing.
+
+```{r}
+L.all <- length(all.data$pos)
+L.train <- 2000
+L.test <- L.all - L.train
+
+i.train <- sample (1:L.all, L.train)
+i.test <- which(!(1:L.all %in% i.train))
+
+data.train <- list(pos=all.data$pos[i.train], popact=all.data$popact[,i.train])
+data.test <- list(pos=all.data$pos[i.test], popact=all.data$popact[,i.test])
+```
+
+We can learn the relationship between $\mathbf{s}$ and $x$ using the training data. Then we can predict the position $x$ from the spikes $\mathbf{s}$. Use one of the learned techniques to predict the position $x$ from the spikes $\mathbf{s}$ in the test data - `data.test`.

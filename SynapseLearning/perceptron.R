@@ -88,13 +88,16 @@ train.perceptron <- function(w.init, patterns, target, Tmax=10, graphics=T){
 
 
 ## two layer perceptron
-train.perceptron.2L <- function(w.in, w.out, patterns, target, Tmax=50, graphics=T){
+train.perceptron.2L <- function(w.in, w.out, patterns, target, Tmax=50, e=10, graphics=T, verbose=T){
   # w.in  - initial input weights
   # w.out - initial output weights
   # patterns - patterns to classify (rows: different points, columns: dimensionality)
   # target: the target classification
   # Tmax: number of steps for training
+  # e: learning rate
   # graphics: T or F, whether or not to plot the results
+  # verbose: whether the error   should be reported during training
+  
   n.patterns <- nrow(patterns)
 	n.inputs <- ncol(patterns)
 	n.hidden <- length(w.out)-1
@@ -105,21 +108,22 @@ train.perceptron.2L <- function(w.in, w.out, patterns, target, Tmax=50, graphics
 	}
 
 	m <- ceiling(max(abs(patterns)))
-	e <- 10 # learning rate
 	
 	for (time in 1:Tmax){
 		output <- rep(0, n.patterns)
 		dw.in <- matrix(0, n.inputs, n.hidden)
 		dw.out <- rep(0, n.hidden+1)
+		error <- 0
 		for (i in 1:n.patterns){
-		  u <- patterns[i,]
-		  y.u <- c(sigm(u %*% w.in), 1)
+		 	u <- patterns[i,]
+		  	y.u <- c(sigm(u %*% w.in), 1)
 			v.u <- sigm(y.u %*% w.out)
 			output[i] <- v.u
 			dE.dw.out <- v.u * (1-v.u) * (v.u - target[i])
-		  dw.out <- dw.out + as.vector(dE.dw.out) * y.u # gradient learning rule
+			error <- error +  (v.u - target[i])^2
+		  	dw.out <- dw.out + as.vector(dE.dw.out) * y.u # gradient learning rule
 			dy.dw.in <- outer(u, y.u[1:(n.hidden)] * (1-y.u[1:(n.hidden)]))
-		  dw.in <- dw.in +  t(as.vector(as.numeric(dE.dw.out) * w.out[1:(n.hidden)]) * t(dy.dw.in)) # gradient learning rule
+		 	dw.in <- dw.in +  t(as.vector(as.numeric(dE.dw.out) * w.out[1:(n.hidden)]) * t(dy.dw.in)) # gradient learning rule
 		}
 		
 		if (graphics){
@@ -131,11 +135,13 @@ train.perceptron.2L <- function(w.in, w.out, patterns, target, Tmax=50, graphics
 				plot(patterns[,1], patterns[,2], pch=16, col=blueRed2(output), xlab="", ylab="", cex=0.7, main='final', axes=F, xlim=c(-m, m), ylim=c(-m, m))
 			}
 		}
+		
+		if (verbose) cat('error', error, '\n')
 		w.in <- w.in - e/2 * dw.in / n.patterns # gradient learning rule
 		w.out <- w.out - e/2 * dw.out / n.patterns # gradient learning rule
 	}
 	
-  y.u <- cbind(sigm(patterns %*% w.in), rep(1, n.patterns))
+    y.u <- cbind(sigm(patterns %*% w.in), rep(1, n.patterns))
 	v.u <- sigm(y.u %*% w.out)
 	vv <- round(sigm(v.u, 1, 1000, 0.5))
 	miss <- sum(xor(vv, target))
