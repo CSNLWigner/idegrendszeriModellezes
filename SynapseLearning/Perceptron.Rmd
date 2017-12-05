@@ -95,7 +95,7 @@ n.hidden <- 10 # number of hidden neurons
 set.seed(114)
 w.in <- matrix(rnorm(3*n.hidden), 3)
 w.out <- matrix(rnorm(n.hidden+1), n.hidden+1)
-w.final.2L <- train.perceptron.2L(w.in, w.out, patterns, target, 2000, T)
+w.final.2L <- train.perceptron.2L(w.in, w.out, patterns, target, 2000, T, verbose=F)
 ```
 
 Indeed, at the end all points are correctly classified. 
@@ -112,8 +112,8 @@ axis(1); axis(2, las=2)
 ```
 
 
-Consider a new point in the above classification task, shown now in black. 
+Consider a new point in the above classification task, shown now in black. These are two novel, test points that the newtork has never seen before. Now the question is, what the network believes - without retraining it - about the color of these novel points? 
 
 * Would you colour it blue or red? 
-* What is the classification of the 2-layer network? Try to use different initial conditions or different number of hidden neurons (between e.g., 3 and 20)!
+* What is the classification of the 2-layer network? Try to use different initial conditions or different number of hidden neurons (between e.g., 3 and 20), but always train the network using the original 14 points, and not the two new points! The new points are only added when you evaluate the network!
 * What is the problem here? What would be the solution to this problem? How the brain can possibly solve this problem?
