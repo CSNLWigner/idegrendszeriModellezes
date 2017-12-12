@@ -92,7 +92,7 @@ lines(x.mids, ratemaps.all[,70], col=viridis(3)[3], lwd=2)
 axis(4, c(0, 5, 10), c(0, 5, 10))
 mtext('firing rate (Hz)', 4, 2, adj=0)
 image(x.mids, 1:42, act.runs[97,,] / act.runs[121,,], col=viridis(24), xlab='x position (m)', ylab='trial', main='', ylim=c(0, 42))
-lines(x.mids, ratemaps.all[,70], col=viridis(3)[3], lwd=2)
+lines(x.mids, ratemaps.all[,97], col=viridis(3)[3], lwd=2)
 axis(4, c(0, 5, 10), c(0, 5, 10))
 mtext('firing rate (Hz)', 4, 2, adj=0)
 ```
@@ -102,6 +102,7 @@ Finally plot the ratemap of all active cells - sorted according to the position 
 
 ```{r}
 i.cells.active <- which(apply(ratemaps.all, 2, max) > 5)
+N.cells.active <- length(i.cells.active)
 ratemaps <- ratemaps.all[,i.cells.active]
 ii.maxs <- apply(ratemaps, 2, which.max)
 sort.peaks <- sort(ii.maxs, ind=T)$ix
@@ -109,8 +110,8 @@ sort.peaks <- sort(ii.maxs, ind=T)$ix
 
 ```{r, fig.cap='Place cells sorted according to their peak firing rate'}
 par(mfcol=c(1,2))
-matplot(ratemaps[,sort.peaks], t='l', lty=1, col=rainbow(60), xlab='x position (m)', ylab='firing rate (Hz)')
-image(ratemaps[,sort.peaks], col=viridis(24), xlab='x position (m)', ylab='trial')
+matplot(x.mids, ratemaps[,sort.peaks], t='l', lty=1, col=rainbow(60), xlab='x position (m)', ylab='firing rate (Hz)')
+image(x.mids, 1:N.cells.active, ratemaps[,sort.peaks], col=viridis(24), xlab='x position (m)', ylab='cell')
 ```
 
 ## Homework 1 - reliability
@@ -131,8 +132,11 @@ What is the information rate of the two cells shown in Fig. 2? Does the differen
 
 Now we will do static decoding of place cell activity. First, we need the spike patterns and the position in temporal bins of 0.1 second width. Note, that now we analyse the same dataset in temporal windows. Before we analysed it in spatial windows. The function `pop.act.t` will return the population activity during the run sessions in approximately 100 ms time windows. This will take some time (~1 min on my computer), but you will be able to follow the progress of the algorithm.
 
-```{r, cache=TRUE}
+```{r, cache=TRUE, message=F, echo=T, results='hide'}
 all.data <- pop.act.t(spt, pos, i.runs=rat$iruns.up, dt=0.1, cell.IDs=rat$PyrIDs[i.cells.active])
+```
+
+```{r}
 summary(all.data)
 ```
 

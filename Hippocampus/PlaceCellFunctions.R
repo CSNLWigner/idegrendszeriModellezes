@@ -121,8 +121,8 @@ pop.act.t <- function(spt, pos, i.runs, dt=0.1, cell.IDs=NULL, verbose=T){
 	for (i.run in 1:N.runs){
 		if (verbose) cat ('calculating trial ', i.run, ' ')
 			
-		i.first <- rat$iruns.up[i.run,1]
-		i.last <- rat$iruns.up[i.run,2]
+		i.first <- i.runs[i.run,1]
+		i.last <- i.runs[i.run,2]
 		nframes.pos.all <- (i.last - i.first) %/% nbins.pos
 		
 		popact.run <- matrix(0, N.cells, nframes.pos.all)
