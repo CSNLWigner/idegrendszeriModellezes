@@ -107,3 +107,10 @@ par(mar=c(4,4,1,1))
 plot(out2[,1], out2[,6] * 1000, axes=F, xlab="time (ms)", ylab="stim (nA)", t="l"); axis(2, las=2)
 axis(1)		
 ```
+
+
+## Homework
+
+In some neurons there are no voltage sensitive (delayed rectifier) potassium channels. (These neurons still have K channels, but their conductance does not depend on the membrane potential.) How the action potential looks like in those neurons? What might be the role the the delayed rectifier potassium channels?
+
+Simulate this, by setting the membrane conductance for the potassium to a constant gK=3e-5 mS value and stimulate the cell with I=0.5 nA current of 2 ms duration.

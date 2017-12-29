@@ -84,10 +84,11 @@ counts <- apply(data$spikes[,,21:90,], c(1,2,4), sum)
 We have 8 cells, 8 conditons and 24 repetitions. Remember, the vector *oris* contains the orientations. Now I select cell 4 and 7 which seems as an active cell showing nice stimulus-dependent responses, and plot their joint activity: 
 
 ```{r, echo=FALSE, fig.height=4, fig.width=4}
+png('decoding.png', w=560, h=560, pointsize=24)
 plot(counts[4,,], counts[7,,], pch='', xlab='cell 4 spike count', ylab='cell 7 spike count', xlim=c(0, 50), ylim=c(0, 50), axes=F); axis(1); axis(2, las=2)
-for (i in 1:8) points(counts[4,i,]+runif(24, -0.5, 0.5), counts[7,i,]+runif(24, -0.5, 0.5), pch=16, col=rainbow(180)[ceiling(oris[i])+1])
-legend('topright', leg=unique(oris), col=rainbow(180)[unique(ceiling(oris))+1], pch=16, bty='n')
-
+for (i in 1:8) points(counts[4,i,]+runif(24, -0.5, 0.5), counts[7,i,]+runif(24, -0.5, 0.5), pch=i, col=rainbow(180)[ceiling(oris[i])+1])
+legend('topright', leg=unique(oris), col=rainbow(180)[unique(ceiling(oris))+1], pch=1:8, bty='n')
+dev.off()
 
 ```
 

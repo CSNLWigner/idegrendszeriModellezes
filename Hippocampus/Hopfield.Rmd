@@ -181,11 +181,11 @@ Show that the function
 
 $E = -\frac{1}{2}\sum_{ij} w_{ij}\,(s_i-f)\,(s_j-f)$
 
-is an energy function, i.e., it is guranteed that the function $E(s)$ will not decrease if the units are updated sequentially using the simplified update rule.
+is an energy function, i.e., it is guranteed that the function $E(s)$ will not increase if the units are updated sequentially using the simplified update rule.
 
 What are the implications of having an energy function for a network? 
 
-Show, that if $y$ is an attractor of the network, then $1-y$ is also a stable pattern, stored in the network!
+Show, that if $y$ is an attractor of the network and $f=0.5$, then $1-y$ is also a stable pattern, stored in the network!
 
 ## Homework 2 - programming
 

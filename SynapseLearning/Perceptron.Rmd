@@ -95,7 +95,7 @@ n.hidden <- 10 # number of hidden neurons
 set.seed(114)
 w.in <- matrix(rnorm(3*n.hidden), 3)
 w.out <- matrix(rnorm(n.hidden+1), n.hidden+1)
-w.final.2L <- train.perceptron.2L(w.in, w.out, patterns, target, 2000, T, verbose=F)
+w.final.2L <- train.perceptron.2L(w.in, w.out, patterns, target, Tmax=2000, e=10, graphics=T, verbose=F)
 ```
 
 Indeed, at the end all points are correctly classified. 
