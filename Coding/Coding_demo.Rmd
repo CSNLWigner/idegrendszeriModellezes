@@ -85,7 +85,7 @@ Now I select cell 7 which seems as an active cell showing stimulus-dependent res
 
 ```{r}
 source("./Ecker/plot_raster.R")
-cell <- data$spikes[7,,,]
+cell <- data$spikes[7,,,] # 16 conditions, 90 time points and 24 repetitions
 plot.raster(cell[2,,], data$times)
 ```
 
@@ -113,5 +113,5 @@ for (i in seq(2, 16, by=2)){
 
 # Homework
 
-Estimate the amount of variability in each of the 16 different conditions. Calculate the mean spike count, the variance and the Fano factor (https://en.wikipedia.org/wiki/Fano_factor). You need the following functions to do it: apply(), mean(), var(). Is the variability you observe consistent with Poisson firing? If not, why not? What if you focus on a short period (200 ms) before or after the stimulus onset?
+Estimate the amount of variability in each of the 16 different conditions. First calculate the spike count on each individual trial and condition (16*24 spike counts). Then calculate the mean and the variance of the spike count across trials (16 means and 16 variances) and finally compute the Fano factor (https://en.wikipedia.org/wiki/Fano_factor, 16 numbers). You need the following functions to do it: apply(), mean(), var(). Is the variability you observe consistent with Poisson firing? If not, why not? What if you focus on a short period (200 ms) before or after the stimulus onset?
 

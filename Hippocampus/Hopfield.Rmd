@@ -34,7 +34,7 @@ sig2.w <- f^2 - 2*f^3 + f^4 # the varinace of the weights after storing a single
 N <- 1024 # number of neurons
 # plot(seq(0, N), dbinom(seq(0,N), N, f))
 
-M <- 50 # number of patterns stored try with 100, 200 and 300
+M <- 150 # number of patterns stored try with 100, 200 and 300
 X <- matrix(rbinom(N*M, 1, f), M, N) # the patterns to be stored
 ```
 
@@ -159,7 +159,8 @@ for (m in 1:MM){ # for each pattern
 	mems[1,m] <- 2 * x %*% x.t / (x.t %*% x.t + x %*% x)
 	mems[2,m] <- 2 * x.recalled %*% x.t / (x.t %*% x.t + x.recalled %*% x.recalled)
 	mems[3,m] <- 2 * nx %*% x / (x %*% x + nx %*% nx)
-	mems[4,m] <- i.recalled
+  mems[4,m] <- i.recalled
+  if (mems[2,m] < mems[3,m]) mems[4,m] <- NA
 }
 	
 ```
