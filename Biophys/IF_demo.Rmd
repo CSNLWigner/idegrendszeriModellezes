@@ -27,10 +27,12 @@ The experimental data is loaded from the `Data` folder - Jolivet_resp.RData and 
 ```{r}
 load("./Jolivet/Jolivet_stim.RData")
 load("./Jolivet/Jolivet_resp.RData")
-matplot(t(resp[1:4+4,3000:4000] - c(0, 1, 2, 3)*100), t="l", lty=1, axes=F, xlab="time (ms)", ylab="voltage (mV)"); axis(1); axis(2, c(-350, -325, -300, -257), c(-50, -25, 0, 25), las=2)
+matplot(t(resp[1:4+4*2,3000:4000] - c(0, 1, 2, 3)*100), t="l", lty=1, axes=F, xlab="time (ms)", ylab="voltage (mV)"); axis(1); axis(2, c(-350, -325, -300, -257), c(-50, -25, 0, 25), las=2)
 ```
 
-Next, we select a 1s long portion of the data - both the stimulus and the response. We will inject the same current to an integrate and fire neuron and record its response.
+There are 8 different stimulus, and 4 recordings with each - so we have altogether 32 stimulus response pair. The stimuli differ in their mean and variance, otherwise they are filtered Gaussian noise. 
+
+Next, we select a 1s long portion of the data - both the stimulus and the response. We select the 9th stimulus response pair, which has a large input variance but low mean. We will inject the same current to an integrate and fire neuron and record its response. We adjusted the parameters of the IF neuron to roughly match the real neuron's response.
 
 
 ```{r}
@@ -66,3 +68,6 @@ plot(r.cell, t="l", lty=1, axes=F, xlab="time (ms)", ylab="voltage (mV)"); axis(
 lines(v.HH[,1], v.HH[,2], col=2)
 ```
 
+## Homework
+
+Select a stimulus response pair, and change the parameters of the three models to match the actual data! Summarise your experience: Which of the three models was the easiest to fit? Why? Are you conteent with the quality of fitting? If not, what are the typical errors you observe, and how could you correct them?

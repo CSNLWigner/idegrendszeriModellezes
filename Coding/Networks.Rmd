@@ -103,7 +103,7 @@ matplot(t, cc, t="l", col=2, lty=c(1,3), xlab="", axes=F, ylab="c (t)"); axis(2,
 
 par(mar=c(4,4,0,1))
 matplot(t, resp, t="l", col=1, lty=c(1,3), xlab="time (s)", axes=F, ylab="r (t)"); axis(1); axis(2, las=2)
-legend('topright', leg=c('cell 1', 'cell 2', 'coupled', 'independent'), lty=c(1,3, 1,1), col=c(1,1,3,1))
+legend('topright', leg=c('cell 1', 'cell 2', 'coupled', 'independent'), lty=c(1,3, 1,1), col=c(1,1,1,3))
 matplot(t, resp0, t="l", col=3, lty=c(1,3), add=T)
 
 ```
@@ -137,7 +137,7 @@ matplot(t, cc, t="l", col=2, lty=c(1,3), xlab="", axes=F, ylab="c (t)"); axis(2,
 
 par(mar=c(4,4,0,1))
 matplot(t, resp, t="l", col=1, lty=c(1,3), xlab="time (s)", axes=F, ylab="r (t)"); axis(1); axis(2, las=2)
-legend('topright', leg=c('cell 1', 'cell 2', 'coupled', 'independent'), lty=c(1,3, 1,1), col=c(1,1,3,1), bg=grey(1, alpha=0.5))
+legend('topright', leg=c('cell 1', 'cell 2', 'coupled', 'independent'), lty=c(1,3, 1,1), col=c(1,1,1,3), bg=grey(1, alpha=0.5))
 matplot(t, resp0, t="l", col=3, lty=c(1,3), add=T)
 
 ```
