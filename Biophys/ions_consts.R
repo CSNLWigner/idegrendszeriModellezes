@@ -15,18 +15,13 @@ cm <- Cm * a # membrane capacitance, uF
 cm.default <- cm
 
 
-gK.unit=0.36 # membrane conductance per unit area - in mS/cm2
-gK=gK.unit * a # membrane conductance, mS
+gK.unit <- 0.36 # membrane conductance per unit area - in mS/cm2
+gK <- gK.unit * a # membrane conductance, mS
 gK.default <- gK
 
-gNa.unit=0.0144 # membrane conductance per unit area - in mS/cm2
-gNa=gNa.unit * a # membrane conductance, mS
+gNa.unit <- 0.0144 # membrane conductance per unit area - in mS/cm2
+gNa <- gNa.unit * a # membrane conductance, mS
 gNa.default <- gNa
-
-
-## the Na/K exchanger, active transport, requires ATP
-I.pump.Na <- gNa*100 * (-1) # the Na flux will be 0 if E.Na - V = 100 mV
-I.pump.K <- (-2)*I.pump.Na/3
 
 
 ## some useful constants

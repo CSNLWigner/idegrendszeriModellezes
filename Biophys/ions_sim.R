@@ -61,6 +61,10 @@ sim.Nernst <- function(t, state, params){
 ## implemented as a differential equation with 5 states
 ## v: intracell voltage, C.Ki: intracell K concentration), V.Ke: extracell K concentration, C.Nai: intracell Na concentration), V.Nae: extracell Na concentration
 
+## the Na/K exchanger, active transport, requires ATP
+I.pump.Na <- gNa*100 * (-1) # the Na flux will be 0 if E.Na - V = 100 mV
+I.pump.K <- (-2)*I.pump.Na/3
+
 sim.equilibrium <- function(t, state, params){
 	with(as.list(c(state, params)),{
 		E.K <- reversal(C.Ki,C.Ke)
