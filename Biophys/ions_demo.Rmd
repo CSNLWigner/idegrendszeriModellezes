@@ -36,7 +36,7 @@ source('./ions_sim.R', chdir=T)
 Both electric and chemical changes are simulated. The goal is to compare the time course and magnitude of the changes under different conditions.
 
 
-## 1. Simulating the Nernst equation
+## 1. Illustrating the Nernst equation
 
 We will simulate the flux of K ions through a simple membrane permeable only to K ions.
 Initially there are no electric potential difference between the two sides of the membrane but there is a difference in the ionic concentrations.
@@ -97,12 +97,13 @@ axis(1)
 
 Interpret the results: 
 
-1. What are the magnitudes of changes you see in the membrane potential and in the K concentration? Do you think that these changes are large or small? Express the changes in the percentage of the final value!
-2. What is the time scale required to achieve steady state - the state where the variables don't change any more?
+1. What are the magnitudes of changes you see in the membrane potential and in the K concentration? Do you think that these changes are large or small? Express the changes in the percentage of the final value! [2p]
+
+2. What is the time scale required to achieve steady state - the state where the variables don't change any more? [2p]
 
 Run new simulations:
 
-3. Change some of the parameters of the system (e.g., change `gK`, `cm` or `C.Ki` by multiplying or dividing them with 2). Observe their effect on the steady state of the system or on the time required to achieve steady state.  
+3. Change some of the parameters of the system (e.g., change `gK`, `cm` or `C.Ki` by multiplying or dividing them with 2). Observe their effect on the steady state of the system or on the time required to achieve steady state. [4p]
 
 ## 2. Equilibrium potential
 
@@ -128,6 +129,12 @@ state <- c(v=0, C.Nai=70, C.Nae=70, C.Ki=65, C.Ke=65)
 
 times <-  seq(0, 5000000, by=1000) # in ms!
 out2 <- ode(y = state, times = times, func = sim.equilibrium, parms = params)
+
+## we set the membrane potential to 0 to see how quickly it returns to the old value
+st <- out2[3501,2:6]
+st[1] <- 0
+times <-  seq(0, 50, by=1) # in ms!
+out3 <- ode(y = st, times = times, func = sim.equilibrium, parms = params)
 ```
 
 Now look at the results
@@ -142,12 +149,31 @@ axis(1, seq(0, 5000000, by= 1000000), seq(0, 5000, by= 1000))
 legend('topright', c('[Na] intra', '[Na] extra', '[K] intra', '[K] extra'), col=c(2,2,3,3), lty=c(1,2,1,2), bg=grey(1, alpha=0.75))
 ```
 
-
 ### Homework problem
 
 Interpret the results: 
 
-4. What are the magnitudes of changes you see in the membrane potential and in the K concentration? Do you think that these changes are large or small? Express the changes in the percentage of the final value!
-5. What is the time scale required to achieve steady state - the state where the variables don't change any more? Compare it with the time scale you observed in the first simulation. 
-6. Initially there is a small, but quick drop in the membrane potential (remember, we started from 0 mV!). What could be the cause of this? Can you eliminate this by changing a single number in the code of the function `sim.equilibrium()`? What did you change and how did this eliminate the drop?
+4. What are the magnitudes of changes you see in the membrane potential and in the K concentration? Do you think that these changes are large or small? Express the changes in the percentage of the final value! [1p]
 
+5. What is the time scale required to achieve steady state - the state where the variables don't change any more? Compare it with the time scale you observed in the first simulation and in Section 3 (Repolarisation). [1p]
+
+6. The equilibrium potential is sometimes approximated as $\tilde{V} = \frac{g_\text{K}\,E_\text{K} + g_\text{Na}\,E_\text{Na}}{g_\text{K}+g_\text{Na}}$. Check the accuracy of the approximation and explain the difference! [4p]
+
+7. Initially there is a small, but quick drop in the membrane potential (remember, we started from 0 mV!). What could be the cause of this? Can you eliminate this by changing a single number in the code of the function `sim.equilibrium()`? What did you change and how did this eliminate the drop? [4p]
+
+8. What happens if, after reaching the steady state, you switch off the Na/K pump? [2p]
+
+## 3. Repolarisation
+
+
+After reaching the steady state we can change the membrane potential to see how quickly it returns to the steady state.
+
+```{r, fig.width=6, echo=FALSE}
+layout(matrix(1:2, 2), 1, c(4,5))
+par(mar=c(1,5,3,1))
+plot(out3[,1], out3[,2], t="l", col=1, axes=F, xlab="", ylab="", main="membrane potential (mV)"); axis(2, las=2)
+par(mar=c(4,5,3,1))
+matplot(out3[,1], out3[,3:6], t="l", col=c(2,2,3,3), lty=c(1,2,1,2), axes=F, xlab="time (ms)", ylab="", main="ion concentrations (mM)"); axis(2, las=2)
+axis(1)
+legend('topright', c('[Na] intra', '[Na] extra', '[K] intra', '[K] extra'), col=c(2,2,3,3), lty=c(1,2,1,2), bg=grey(1, alpha=0.75))
+```
