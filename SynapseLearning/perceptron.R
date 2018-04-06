@@ -39,7 +39,7 @@ blueRed2 <- function(x){
 
 
 ## one layer perceptron
-train.perceptron <- function(w.init, patterns, target, Tmax=10, graphics=T){
+train.perceptron <- function(w.init, patterns, target, Tmax=10, learn_rate=10, graphics=T){
 	n.patterns <- nrow(patterns)
 	n.inputs <- ncol(patterns)
 	if (graphics){
@@ -48,8 +48,8 @@ train.perceptron <- function(w.init, patterns, target, Tmax=10, graphics=T){
 	}
 	w <- w.init
 	m <- ceiling(max(abs(patterns)))
-	e <- 10 # learning rate
-	
+  miss <- rep(0, Tmax)
+  
 	for (time in 1:Tmax){
 		output <- rep(0, n.patterns)
 		dw <- rep(0, n.inputs)
@@ -59,6 +59,11 @@ train.perceptron <- function(w.init, patterns, target, Tmax=10, graphics=T){
 			output[i] <- v.u
 		    dw <- dw + as.vector(v.u * (1-v.u) * (v.u - target[i])) * u # gradient learning rule
 		}
+
+		v.u <- sigm(patterns %*% w)
+		vv <- round(sigm(v.u, 1, 1000, 0.5))
+		miss[time] <- sum(xor(vv, target))
+		# cat('misclassification rate: ', round(miss[time]/n.patterns*100), '% \n')
 		
 		if (graphics){
 			if (time < 12)	{
@@ -73,13 +78,8 @@ train.perceptron <- function(w.init, patterns, target, Tmax=10, graphics=T){
 				lines(x, sep2, col=3, lwd=2)
 			}
 		}
-		w <- w - e/2 * dw / n.patterns # gradient learning rule
+		w <- w - learn_rate/2 * dw / n.patterns # gradient learning rule
 	}
-	
-	v.u <- sigm(patterns %*% w)
-	vv <- round(sigm(v.u, 1, 1000, 0.5))
-	miss <- sum(xor(vv, target))
-	# cat('misclassification rate: ', round(miss/n.patterns*100), '% \n')
 	
 	w.final <- list(w=w, miss=miss)
 	w.final
@@ -129,10 +129,10 @@ train.perceptron.2L <- function(w.in, w.out, patterns, target, Tmax=50, e=10, gr
 		if (graphics){
 			if ((time %% nshow) == 1)	{
 				title <- paste('t=', time)
-				plot(patterns[,1], patterns[,2], pch=16, col=blueRed2(output), xlab="", ylab="", main=title, cex=0.7, axes=F, xlim=c(-m, m), ylim=c(-m, m))
+				plot(patterns[,1], patterns[,2], pch=16, col=blueRed2(output), xlab="", ylab="", main=title, cex=1.7, axes=F, xlim=c(-m, m), ylim=c(-m, m))
 			}
 			if (time == Tmax)	{
-				plot(patterns[,1], patterns[,2], pch=16, col=blueRed2(output), xlab="", ylab="", cex=0.7, main='final', axes=F, xlim=c(-m, m), ylim=c(-m, m))
+				plot(patterns[,1], patterns[,2], pch=16, col=blueRed2(output), xlab="", ylab="", cex=1.7, main='final', axes=F, xlim=c(-m, m), ylim=c(-m, m))
 			}
 		}
 		

@@ -12,16 +12,15 @@ knitr::opts_chunk$set(echo = TRUE)
 ```
 
 
-This is a demo for illustrating the concept of attractor network using the Hopfield network. The Hopfield network models associative memory by storing a number of unique patterns in a recurrent neuronal network. It also illustrates the concept of content addressable memory, and was extremly influential as a model for episodic memory, 
-where each stored pattern forms the representation of an event.
+This is a demo for illustrating the concept of associative memory using the Hopfield network. The Hopfield network stpres a number of unique patterns in a recurrent neuronal network. It also illustrates the concept of content addressable memory, and was extremly influential as a model for episodic memory, where each stored pattern forms the representation of an event.
 
-It would be much simpler to rewrite this demo using the original Hopfield equations - where the dynamics is much simpler and analytical derivations can be easily done.
+The idea is the following: A particular event can be defined by the unique combination sensory inputs available for the subject: the description of a visual scene, the noises present along with potential tactile and olfactory cues. These sensory stimuli elicit a neuronal activity pattern which is be associated with the stimulus: it represents the event. If we want to momorise the event, we need to store this neuronal activity pattern somehow in the brain in a way that the brain should be able to re-create the same activity pattern in the absence of the sensory stimuli. When the brain internally re-creates the stored neuronal activity pattern is called memory recall. Here we well see an example neuronal network that is able to store and recall activity patterns. 
 
 Important concepts:
 
 * storage and recall
 * attractor
-* converence
+* convergence
 * energy function
 
 ## Storing patterns in a recurrent network
@@ -29,17 +28,15 @@ Important concepts:
 We will use a standard binary Hopfield network: each neuron has two state, 0 and 1. The sparseness of the patterns defines the proportion of 1s in the data, which is defined by the parameter `f`. We will have $32 \cdot 32 = 1024$ neurons, and will store $M$ patterns. 
 
 ```{r}
-f <- 0.5 # the sparseness of the representation: percent of 
-sig2.w <- f^2 - 2*f^3 + f^4 # the varinace of the weights after storing a single pattern
+f <- 0.5 # the sparseness of the representation: percent of 1s
 N <- 1024 # number of neurons
-# plot(seq(0, N), dbinom(seq(0,N), N, f))
 
-M <- 150 # number of patterns stored try with 100, 200 and 300
-X <- matrix(rbinom(N*M, 1, f), M, N) # the patterns to be stored
+M <- 100 # number of patterns stored try with 10, 20, 50, 100, 150, 200 and 300
+X <- matrix(rbinom(N*M, 1, f), M, N)*2-1 # the patterns to be stored
 ```
 
 
-The first 2 patterns are meaningful images - these patterns do not differ from the other patterns in any other way, just their pixels are ordered in a way that seems meaningful for us. We red these patterns from png imagefiles in the directory `Demos/Fig32s/`.
+The first 2 patterns are meaningful images - these patterns do not differ from the other patterns in any other way, just their pixels are ordered in a way that seems meaningful for us. We read these patterns from png imagefiles in the directory `Demos/Fig32s/`.
 
 ```{r, fig.cap='The first 8 stored patterns', fig.width=6.5, fig.height=3}
 library(png)
@@ -52,7 +49,7 @@ for (i.image in 1:2){
 	im1 <- readPNG(imname)
 	for (i in 1:32){
 		for (j in 1:32){
-			ims[i.image, i,j] <- round(1-im1[33-j, i,1])
+			ims[i.image, i,j] <- round(1-im1[33-j, i,1]) * 2 - 1
 		}
 	}
 	image(ims[i.image,,], col=grey(seq(0,1, by=0.1)), axes=F)
@@ -72,7 +69,8 @@ Training in a neuronal network means to change the strength of the synaptic weig
 There are several ways to train a Hopfield network. We will use the simple, offline covariance rule, i.e., the recurrent synaptic weight are set to be the covariance of the training data. This is an offline rule, because to set the weight we need to know first all of the stored patterns. The diagonal is set to zero.
 
 ```{r}
-W <- t(X-f) %*% (X-f)
+mu <- 1/M
+W <- mu * t(X) %*% X
 diag(W) <- 0
 
 ```
@@ -81,9 +79,9 @@ diag(W) <- 0
 To test the network's performance, we will initialise the network with  a noisy version of one of the originally stored patterns. We add noise in way to preserve the sparseness of the network.
 
 ```{r, fig.cap='Left: stored image, Right: recall cue', fig.width=3, fig.height=1.5}
-x <- X[1,]
+x <- (X[1,]+1)/2
 px <- rep(1-f/3, N); px[!x] <- f/3 
-nx <- rbinom(N, 1, px) # the noisy version of the original
+nx <- rbinom(N, 1, px)*2-1 # the noisy version of the original
 
 par(mfcol=c(1,2)) # two rows, 4 columns
 par(mar=c(1,1,1,1)) # small margos
@@ -94,9 +92,9 @@ image(matrix(nx, 32), col=grey(seq(0,1, by=0.1)), axes=F)
 
 Next we will test the network with the first 50 patterns. We start the network from the noisy recall cue and then update the neurons simultaneously according the the following rule:
 
-$\mathbf{x} = \text{round}\bigg[ \frac{1}{\sigma^2_w\,(M-1)} \bigg( \mathbf{W} \mathbf{x} - f \sum_j W_{ij}\bigg)\bigg]$
+$\mathbf{x} = \text{sign}\big( \mathbf{W} \mathbf{x}\big)$
 
-where $\sigma^2_w$ is the expected variance of the weights after storing a single pattern and the function $\text{round}$ returns the closest integer (0 or 1). The recall dynamics seems quite complex, but most of it is required only because we stored patterns with $f \neq 0.5$. 
+where the function $\text{sign}$ returns $-1$ or $1$ depending on the sign of the argument.
 
 We will check the following measures for each pattern:
 
@@ -105,7 +103,7 @@ We will check the following measures for each pattern:
 * cue vs. target: the difference between the stored and the original cue
 * i.recalled: identity of the recalled pattern
 
-The network works if the correlation with the original, stored attern increases during recall. 
+The network works if the correlation with the original, stored pattern increases during recall. 
 
 Note, that testing all patterns in a Hopfield network can be quite slow!
 
@@ -117,28 +115,33 @@ kk <- 0
 mems <- matrix(NA, 4, MM)
 rownames(mems) <- c("recalled vs target", "recalled vs best", "cue vs. target", "i.recalled")
 
+noiseLevel <- f/2 # 0: no noise, f/1=0.5: no signal
+
+cors.orig.t <- matrix(NA, 10, 1001)
+
 par(mfcol=c(3,7))
 par(mar=c(1,1,1,1))
 
 for (m in 1:MM){ # for each pattern
-	x <- X[m,] 		# we start from the stored pattern
+	x <- (X[m,]+1)/2 		# we start from the stored pattern
 
-  px <- rep(1-f/3, N); px[!x] <- f/3 
-  x.t <- rbinom(N, 1, px) # the noisy version of the original
+  px <- rep(1-noiseLevel, N); px[!x] <- noiseLevel
+  x.t <- rbinom(N, 1, px)*2-1 # the noisy version of the original
 	nx <- x.t
 	converged <- F
 	k <- 0
 
 	while (converged == F){
-		I <- 1/(sig2.w * (M-1)) * (W %*% x.t - f * rowSums(W)) # optimal dynamics from Eq. 6. of Savin et al., 2013
+	  cors.orig.t[m, k+1] <- cor(x.t, x)
+		I <-(W %*% x.t) # dynamics after MacKay - Eqs. 42.2-42.3
 		x.I <- rep(F, N)
 		x.I [I>0] <- T
-		change.x <- which(xor(x.t, x.I))
+		change.x <- which(xor(x.t==1, x.I))
 		if (length(change.x) == 0){ # convergence
 			converged <- T
 		} else {
 			ch.x <- sample(change.x, 1)
-			x.t[ch.x] <- 1 - x.t[ch.x]
+			x.t[ch.x] <- (-1) * x.t[ch.x]
 		}
 		k <- k+1
 		if (k>1000) break
@@ -156,6 +159,7 @@ for (m in 1:MM){ # for each pattern
 	# points (mem, col=3, t="h")
 	i.recalled <- which.max(mem)
 	x.recalled <- X[i.recalled,]
+	x <- X[m,]
 	mems[1,m] <- 2 * x %*% x.t / (x.t %*% x.t + x %*% x)
 	mems[2,m] <- 2 * x.recalled %*% x.t / (x.t %*% x.t + x.recalled %*% x.recalled)
 	mems[3,m] <- 2 * nx %*% x / (x %*% x + nx %*% nx)
@@ -172,33 +176,41 @@ Let's evaluate the network:
 * The average correlation of the *recall cue* with the stored: `r mean(mems[3,])`
 * Percent of correctly recalled patterns: `r 100 - 100 * sum((mems[4,] - 1:MM) > 0) / MM`%
 
-# Homework
+We can also see how the patterns become similar to the originally stored patterns during recall. We quantify this by the correlation between the current and the stored pattern and plot it in the function of time:
 
-You can choose betwee two different homeworks:
+```{r, cache=T, fig.cap='correlation between the stored pattern and the activity in the network', fig.width=4, fig.height=3}
+matplot(t(cors.orig.t[,1:1000]), t='l', lty=1, col=rainbow(12), axes=F, xlab='timestep', ylab='corelation')
+axis(1); axis(2, las=2)
+```
+
+# Homework
 
 ## Homework 1 - theory
 
 Show that the function
 
-$E = -\frac{1}{2}\sum_{ij} w_{ij}\,(s_i-f)\,(s_j-f)$
+$E = -\frac{1}{2}\sum_{ij} w_{ij}\,x_i\,x_j$
 
-is an energy function, i.e., it is guranteed that the function $E(s)$ will not increase if the units are updated sequentially using the simplified update rule.
+is an energy function, i.e., it is guranteed that the function $E(x)$ will not increase if the units are updated sequentially using the simplified update rule. [3 points]
 
-What are the implications of having an energy function for a network? 
+What are the implications of having an energy function for a network? [2 points]
 
-Show, that if $y$ is an attractor of the network and $f=0.5$, then $1-y$ is also a stable pattern, stored in the network!
+Show, that if a pattern $y$ is an attractor of the network then $1-y$ is also a stable pattern, stored in the network! [2 points]
 
 ## Homework 2 - programming
 
-Show, that if $y$ is an attractor of the network, then $1-y$ is also a stable pattern, stored in the network!
+Demonstrate, that if $y$ is an attractor of the network, then $1-y$ is also a stable pattern, stored in the network! [2 points]
 
-How would you measure the capacity of the network? Try to store more patterns in the Hopfield network (try e.g., 50-200-1000-5000). Check what happens to the first 50 stored patterns! What is the capacity of the network?
+Change the noise level of the system. Observe how the recall quality changes when the recall cue becomes more noisy! [2 points]
+
+How would you measure the capacity of the network? Try to store more patterns in the Hopfield network (try e.g., 50-200-1000-5000). Check what happens to the first 50 stored patterns! What is the capacity of the network? [5 points]
 
 ## Homework 3 - open questions
 
 How would you improve the Hopfield network to
 
-* make it more efficient - i.e., storing more patterns without interference?
-* make it more biologically realistic? Identify at least 3 different features of the Hopfield net that are probably not similar to what we see in the nervous system. How would you change it to be more similar to the nervous system?
+* make it more efficient - i.e., storing more patterns without interference? [5 points]
+
+* make it more biologically realistic? Identify at least 3 different features of the Hopfield net that are probably not similar to what we see in the nervous system. How would you change it to be more similar to the nervous system? [3 points]
 
 
