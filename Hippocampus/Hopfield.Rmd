@@ -31,7 +31,7 @@ We will use a standard binary Hopfield network: each neuron has two state, 0 and
 f <- 0.5 # the sparseness of the representation: percent of 1s
 N <- 1024 # number of neurons
 
-M <- 100 # number of patterns stored try with 10, 20, 50, 100, 150, 200 and 300
+M <- 150 # number of patterns stored try with 10, 20, 50, 100, 150, 200 and 300
 X <- matrix(rbinom(N*M, 1, f), M, N)*2-1 # the patterns to be stored
 ```
 
@@ -115,7 +115,7 @@ kk <- 0
 mems <- matrix(NA, 4, MM)
 rownames(mems) <- c("recalled vs target", "recalled vs best", "cue vs. target", "i.recalled")
 
-noiseLevel <- f/2 # 0: no noise, f/1=0.5: no signal
+noiseLevel <- f/10 # 0: no noise, f/1=0.5: no signal
 
 cors.orig.t <- matrix(NA, 10, 1001)
 

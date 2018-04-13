@@ -1,7 +1,7 @@
 ---
 title: "Offline replay of trajectories"
 author: "Balazs B Ujfalussy"
-date: "20/11/2017"
+date: "`r format(Sys.time(), '%d %B, %Y')`"
 output:
   pdf_document: default
   html_document: default
@@ -12,12 +12,11 @@ knitr::opts_chunk$set(echo = TRUE)
 ```
 
 
-This is a demo for illustrating replay of place cell activity in the hippocampus. We will analyse the same 30 min recording session from a rat running back and forth in a 1.6 m ling linear track, from the laboratory of Gyuri Buzsaki as in the previous demo. There are about 120 pyramidal cells recorded simulataneously, half of them are place cells. There are also 20 interneurons. 
+This is a demo for illustrating fast sequences of place cell activity in the hippocampus during sharp wave events. We will analyse the same 30 min recording session from a rat running back and forth in a 1.6 m ling linear track, from the laboratory of Gyuri Buzsaki as in the place cell exercise. There are about 120 pyramidal cells recorded simulataneously, half of them are place cells. There are also 20 interneurons, which we will not study. 
 
-There are two homeworks here you can choose from. You don't need to do both.
+There are two exercises:
 
-* Compare place cells in left and right runs.
-
+* Compare place fields in left versus right runs.
 * Detect offline replay event and analyse their behavioural correlates.
 
 The source of the data:
@@ -40,11 +39,11 @@ The `summary()` function tells you what variables are encoded int the list `rat`
 summary(rat)
 ```
 
-* The main variables encoded are the position (`pos`), spike times (`spt`). The position is a matrix of two columns: time in seconds and smoothed 1D position of the animal along the linear track. The spt is also a two colummn matrix, time in seconds and the ID of the cell that emitted the spike. (Cell id's refer to the elctrodes the cell was recorded from, so they do not start from 1...)
+* The main variables encoded are the position (`pos`), spike times (`spt`). The position is a matrix of two columns: time in seconds and smoothed 1D position of the animal along the linear track. The spt is also a two colummn matrix, time in seconds and the ID of the cell that emitted the spike. (Cell id's refer to the electrodes the cell was recorded from, so they do not start from 1...)
 
 * Before and after each run the animal stays at the end for a while to consume reward. Up and down runs (left and right, sorry :-)) are associated with different neuronal activity, so they are treated differently. The variable `iruns.down` and `iruns.up` stores the start and the end of the individual runs indexing the rows of the matrix `pos`.
 
-* The variable `PyrIDs` and `IntIDs` stores the name of the (putative) pyramidal cells and interneurons. 
+* The variables `PyrIDs` and `IntIDs` store the name of the (putative) pyramidal cells and interneurons. 
 
 * `MazeRange` is the x coordinates associated with the start and the end of each run. 
 
@@ -69,7 +68,7 @@ x.mids <- round(x.breaks[-1] - dx/2, 3)
 ```
 
 
-`act.runs` is an array with the spikes of each cell on each trial with spatial resolution dx. Its dimensions are {number of cells} x {distance} x {trials}. The last neuron is not a true neuron, but stores the time (in seconds) the rat spent at each location at each trial. Now we analyse both left and right runs, to see that place cell activity depends on the diraction of motion, but later we will only look for replay events related to the left runs.
+`act.runs` will be an array with the spikes of each of the 120 cells on each of the 32 position bins (with spatial resolution dx) on each of the 42 trials. Its dimensions are {number of cells} x {distance} x {trials}. The last 'neuron' is not a true neuron, but stores the time (in seconds) the rat spent at each location at each trial. This can be used to calculate firing rates by dividing the number of spikes with the occupancy time. Now we analyse both left and right runs, to see that place cell activity depends on the direction of motion, but later we will only look for replay events related to the left runs.
 
 ```{r, cache=TRUE}
 act.runs.left <- cell.maps.runs(spt, pos, i.runs=rat$iruns.up, dx=0.05, MazeRange=rat$MazeRange, cell.IDs=rat$PyrIDs)
@@ -78,7 +77,7 @@ act.runs.right <- cell.maps.runs(spt, pos, i.runs=rat$iruns.down, dx=0.05, MazeR
 
 
 We divide spike count with the occupancy time to get firing rates, and plot the firing rate of all cells in the function of distance.
-```{r, fig.cap='Ratemap of all pyramida cells.'}
+```{r, fig.cap='Ratemap of all pyramida cells on left runs.'}
 ratemaps.left.t <- apply(act.runs.left[1:120,,], c(1,2), sum)
 Tmap.left <- apply(act.runs.left[121,,], 1, sum)
 
@@ -88,10 +87,13 @@ Tmap.right <- apply(act.runs.right[121,,], 1, sum)
 ratemaps.left.all <- t(ratemaps.left.t) / Tmap.left
 ratemaps.right.all <- t(ratemaps.right.t) / Tmap.right
 matplot(x.mids, ratemaps.left.all, t='l', lty=1, col=rainbow(120), xlab='x position (m)', ylab='firing rate (Hz)')
-#matplot(x.mids, ratemaps.right.all, t='l', lty=1, col=rainbow(120), xlab='x position (m)', ylab='firing rate (Hz)')
 ```
 
-Now we prepare a vector containing the index pf those cells that were active on the left runs and another list for the right run-related cells. Finally we prepare a third vector with cells that were active in either left or right runs.
+```{r, fig.cap='Ratemap of all pyramida cells on right runs.'}
+matplot(x.mids, ratemaps.right.all, t='l', lty=1, col=rainbow(120), xlab='x position (m)', ylab='firing rate (Hz)')
+```
+
+We prepare a vector containing the index pf those cells that were active on the left runs and another list for the right run-related cells. Finally we prepare a third vector with cells that were active in either left or right runs.
 
 ```{r}
 i.cells.active.left <- which(apply(ratemaps.left.all, 2, max) > 5) 
@@ -103,13 +105,12 @@ N.cells.active.right <- length(i.cells.active.right)
 
 i.cells.active <- which((apply(ratemaps.left.all, 2, max) > 5) | (apply(ratemaps.right.all, 2, max) > 5)) 
 N.cells.active <- length(i.cells.active)
-
 ```
 
-Now we plot all place cell's activity in both left and right runs in the function of position. The different directions are plotted next to each other using different colormaps. For some cells, the place fields are similar in left and right runs, while in most cells they are different. We save the plot in the png file 'allPlaceCells.png'.
+We plot all place cell's activity in both left and right runs in the function of position. The different directions are plotted next to each other using different colormaps. For some cells, the place fields are similar in left and right runs, while in most cells they are different. We save the plot in the png file 'allPlaceCells.png'.
 
 ```{r}
-png(file='allPlaceCells.png', 2500, 1500)
+#png(file='allPlaceCells.png', 2500, 1500)
 par(mfcol=c(8,10)); par(mar=c(1,1,1,1))
 for (i.cell in i.cells.active){
 	image(x.mids, 1:42, act.runs.left[i.cell,,] / act.runs.left[121,,], col=viridis(24), xlab='', ylab='', main='', ylim=c(0, 42), axes=F, xlim=c(-0.3, 3))
@@ -120,43 +121,59 @@ for (i.cell in i.cells.active){
 	# title(main=paste('info:', round(info.cell, 3), 'bit / s'))
 	# readline(i.cell)
 }
-dev.off()
+#dev.off()
 ```
+
+
+To help comparing left and right runs, we sort the place cells according to the peak of their firing rate along the track on the left runs.
+
 
 ```{r}
 ratemaps.left <- ratemaps.left.all[,i.cells.active]
+ratemaps.right <- ratemaps.right.all[,i.cells.active]
 ii.maxs.left <- apply(ratemaps.left, 2, which.max)
 sort.peaks.left <- sort(ii.maxs.left, ind=T)$ix
-
-ratemaps.right <- ratemaps.right.all[,i.cells.active]
-ii.maxs.right <- apply(ratemaps.right, 2, which.max)
-sort.peaks.right <- sort(ii.maxs.right, ind=T)$ix
 ```
 
-```{r, fig.cap='Place cells sorted according to their peak firing rate', fig.height=5}
-par(mfcol=c(2,2))
+We plot their firing rate, using a colormap - see the left plot. In this case we see activity along the diagonal of the plot - cells at the bottom fire early, whereas cells on the top fire late on left trials. 
+
+On the right side of the plot we show the same cells' activity during right runs. If the firing rate of the cells were similar in the two directions, we would see a similar diagonal line. 
+
+```{r, fig.cap='Neuronal firing rates on left and right runs sorted according to their peak firing rate on left runs.', fig.height=3}
+par(mfcol=c(1,2))
 image(x.mids, 1:N.cells.active, ratemaps.left[,sort.peaks.left], col=viridis(24), xlab='x position (m)', ylab='cell', main="left, sorted: left")
 image(x.mids, 1:N.cells.active, ratemaps.right[,sort.peaks.left], col=viridis(24), xlab='x position (m)', ylab='cell', main="right, sorted: left")
-image(x.mids, 1:N.cells.active, ratemaps.left[,sort.peaks.right], col=viridis(24), xlab='x position (m)', ylab='cell', main="left, sorted: right")
+```
+
+
+Just for sanity check, we do the same for right runs as well.
+
+
+```{r, fig.cap='Neuronal firing rates on left and right runs sorted according to their peak firing rate on right runs.', fig.height=3}
+ii.maxs.right <- apply(ratemaps.right, 2, which.max)
+sort.peaks.right <- sort(ii.maxs.right, ind=T)$ix
+par(mfcol=c(1,2))
 image(x.mids, 1:N.cells.active, ratemaps.right[,sort.peaks.right], col=viridis(24), xlab='x position (m)', ylab='cell', main="right, sorted: right")
+image(x.mids, 1:N.cells.active, ratemaps.left[,sort.peaks.right], col=viridis(24), xlab='x position (m)', ylab='cell', main="left, sorted: right")
 ```
 
 
 ## Homework 1
 
-* Calculate the distribution of correlations (`cor()`) among place fields in the two different running directions! Plot it on a histogram (`hist()`), and indicate its mean!
+* Calculate the distribution of correlations (`cor()`) among place fields in the two different running directions! Plot it on a histogram (`hist()`), and indicate its mean! [3 points]
 
-* As a control, shuffle the cells randomly, and calculate the correlations again. Calculate the mean of the shuffled distribution as well. 
+* As a control, shuffle the cells randomly, and calculate the correlations again. Calculate the mean of the shuffled distribution as well. [3 points]
 
-* Observe the two distributions. Are they similar or different? What does it tell you about the place representation in the two running directions? Could you decode the direction of motion from the cell's activity? Could you decode the position of the animal? (Now you don't need to decode either.)
+* Observe the two distributions. Are they similar or different? [1p] What does it tell you about the place representation in the two running directions? [1p] Could you decode the direction of motion from the cell's activity? Could you decode the position of the animal? (Now you don't need to decode either.) [2p]
 
 
 
 
 ## Preplay and replay analysis
 
-We collect all spikes in a huge matrix with columns being the time points ar 40 Hz resolution and rows being the active cells. We only focus on cells that are active during the left runs. We will detect candidate replay events by a transient increase in the population activity while the animal is immobile.
+We collect all spikes in a huge matrix with columns being the time points at 40 Hz resolution and rows being the active cells. We only focus on cells that are active during the left runs. We will detect candidate replay events by a transient increase in the population activity while the animal is immobile.
 
+This will take a couple of minutes to calculate for each cell.
 ```{r, cache=T, results='hide'}
 ## collect all spikes in a big population activity matrix
 
@@ -283,8 +300,13 @@ for (i.spw in c(15:20)){
 
 ## Homework 2
 
-* Come up with a metric that can classify these events into three categories: forward, backward or unrelated.
+* Come up with a metric that can classify these events into three categories: forward, backward or unrelated. [3 points]
 
-* Calculate this metric for the replay events shown above. Do you observe more forward or reverse events? 
+* Calculate this metric for the replay events shown above. Do you observe more forward or reverse events? [3 points]
 
-* Calculate the frequency of the different categories at the left and right end of the linear track. Does the frequency of the forward and backward events depend on the position of the animal? 
+* Calculate the frequency of the different categories at the left and right end of the linear track. Does the frequency of the forward and backward events depend on the position of the animal? [4 points]
+
+* Repeat the same analysis using neuronal activity pattern templates defined on the right runs. [4 points]
+
+* Now consider left and right runs together: you have 4 templates: left forward, left backward, right forward, right backward. This may cause two problems: 1) more template patterns increases the probability that a rendom pattern is found to be matched to one of the templates. 2) It is not easy to classify the events if the templates are similar. Considering these difficulties, classify the events into the corresponding 5 categories. [20 points]
+
