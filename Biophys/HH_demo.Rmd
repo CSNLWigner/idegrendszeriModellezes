@@ -65,7 +65,7 @@ state <- c(v=-65, m=.053, h=.596, n=.317) # initial state of the system
 out <- ode(y = state, times = times, func = sim.HH, parms = params) #ode is a function that simulates a system of Ordinary Differential Equations - see the documentation of the package deSolve
 ```
 	
-When we plot the response (membrane potential) of the cell as the function of time we can see that it responds to the constant current with repetitive action potential firing. You can also observe the evolution of the gate variables indicated with different colors. The plots on the right shows the state space
+When we plot the response (membrane potential) of the cell as the function of time we can see that it responds to the constant current with repetitive action potential firing. You can also observe the evolution of the gate variables indicated with different colors.
 
 ```{r, echo=FALSE}
 
