@@ -30,6 +30,6 @@ To complete the exercise, read the problem, perform the simulation/analysis, int
 4. Hippocampus
 
 * Hopfield.Rmd: energy function, capacity and biological realstic memory networks
-* PlaceCells.RMd: place cells recorded from a freely moving rat - information rate, reliability and decoding 
-
+* PlaceCells.Rmd: place cells recorded from a freely moving rat - information rate, reliability and decoding 
+* Replay.Rmd: same dataset, directionality of place fields and replay events
  
