@@ -149,6 +149,7 @@ axis(1, seq(0, 5000000, by= 1000000), seq(0, 5000, by= 1000))
 legend('topright', c('[Na] intra', '[Na] extra', '[K] intra', '[K] extra'), col=c(2,2,3,3), lty=c(1,2,1,2), bg=grey(1, alpha=0.75))
 ```
 
+
 ### Homework problem
 
 Interpret the results: 
@@ -157,7 +158,7 @@ Interpret the results:
 
 5. What is the time scale required to achieve steady state - the state where the variables don't change any more? Compare it with the time scale you observed in the first simulation and in Section 3 (Repolarisation). [1p]
 
-6. The equilibrium potential is sometimes approximated as $\tilde{V} = \frac{g_\text{K}\,E_\text{K} + g_\text{Na}\,E_\text{Na}}{g_\text{K}+g_\text{Na}}$. Check the accuracy of the approximation and explain the difference! [4p]
+6. The equilibrium potential is sometimes approximated as $\tilde{V} = \frac{g_\text{K}\,E_\text{K} + g_\text{Na}\,E_\text{Na}}{g_\text{K}+g_\text{Na}}$. Check the accuracy of the approximation and explain the difference with the other approximation ($\tilde{V} = \frac{3\,g_\text{K}\,E_\text{K} + 2\,g_\text{Na}\,E_\text{Na}}{3\,g_\text{K}+2\,g_\text{Na}}$)! [4p]
 
 7. Initially there is a small, but quick drop in the membrane potential (remember, we started from 0 mV!). What could be the cause of this? Can you eliminate this by changing a single number in the code of the function `sim.equilibrium()`? What did you change and how did this eliminate the drop? [4p]
 
