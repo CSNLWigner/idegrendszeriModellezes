@@ -149,8 +149,12 @@ Assume you have a linear network with the follwing weight matrix:
 include_graphics('./homeWork.png')
 ```
 
-* What is the activity of the network started from various initial conditions in the absence of external input? How does it react to external inputs?
+* What is the activity of the network started from various (try at least 3 different) initial conditions in the absence of external input? [4p]
 
-* What happens if you *slightly* change the lower left element of the connectivity matrix to $W_{22} = 1/5$ or $W_{22} = 3/5$?
+* How does it react to external inputs? Stimulate it with trains of positive and negative stimuli targeting different combinations of the cells. [4p]
 
-* How would you interpret these results? What would be the possible biological function of the original network? Are there any computational or biological problems/challanges associated with it?
+* What happens if you *slightly* change the lower left element of the connectivity matrix to $W_{22} = 2/5-\epsilon$ or $W_{22} = 3/5+\epsilon$? [4p]
+
+* How would you interpret these results: What is the computation implemented by the original network and what would be its possible biological function? [4p]
+
+* Are there any computational or biological problems/challanges associated with it? Would it be easy to implement such a network with real, biological neurons? [4p]
