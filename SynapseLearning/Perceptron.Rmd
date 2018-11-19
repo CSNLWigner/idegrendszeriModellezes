@@ -97,12 +97,18 @@ Now, instead of learning a classification that the teacher neuron already solved
 
 ```{r}
 set.seed(29)
-n.patterns <- 14
+n.patterns <- 16
 sp <- 0.5
 
-patterns <- cbind(matrix(rnorm(n.input*n.patterns), n.patterns), rep(1, n.patterns))
+#patterns <- cbind(matrix(rnorm(n.input*n.patterns), n.patterns), rep(1, n.patterns))
+#target <- rep(0, n.patterns)
+#target[sample(1:14, 7)] <- 1
+
+xx <- seq(-pi, pi, length=12)
+patterns <- cbind(c(sin(xx[1:8]), 0.5*sin(xx[c(1,5,9)]), 1.5*sin(xx[c(2, 4, 6, 8, 11)])), c(cos(xx[1:8]), 0.5*cos(xx[c(1,5,9)]), 1.5*cos(xx[c(2, 4, 6, 8, 11)])), rep(1, n.patterns))
 target <- rep(0, n.patterns)
-target[sample(1:14, 7)] <- 1
+target[1:8] <- 1
+
 ```
 
 Here I plot the target mapping. It is clearly impossible to separate the red dots from the blue using a straight line - so most likely the simple neuron will not be able to learn the task.
@@ -117,19 +123,19 @@ Let's observe how the student neuron will try to implement the mapping:
 ```{r}
 set.seed(20)
 w.init <- rnorm(3)
-w.final <- train.perceptron(w.init, patterns, target, 20, learn_rate=10*learn_rate, graphics=T)
+w.final <- train.perceptron(w.init, patterns, target, 20, learn_rate=5*learn_rate, graphics=T)
 ```
 
-The misclassification rate is `r round(w.final$miss/n.patterns*100)`%. It is not that bad after all, but there are still 3 patterns clearly misclassified.
+The misclassification rate is `r round(tail(w.final$miss, 1)/n.patterns*100)`%. It is not that bad after all, but there are still `r round(tail(w.final$miss, 1))` patterns misclassified.
 
 
-```{r}
+```{r, fig.height=4, fig.width=4}
 target.pred <- (sign(patterns %*% w.final$w) + 1) / 2
 separatrix.pred <- (-1) * (w.final$w[1] * x  + w.final$w[3]) / w.final$w[2]
 
 plot(patterns[,1], patterns[,2], pch=21, col=blueRed2(target), bg=blueRed2(target.pred), xlab="", ylab="", cex=2, axes=F, lwd=3)
-lines(x, separatrix, col=3, lwd=2)
-lines(x, separatrix.pred, col=5, lwd=2)
+#lines(x, separatrix, col=3, lwd=2)
+lines(x, separatrix.pred, col=1, lwd=2)
 ```
 
 
@@ -150,10 +156,14 @@ Indeed, at the end all points are correctly classified.
 
 ## Homework
 
+So far we have evaluated the performance of the 2-layer perceptron only on training data. Now, instead of generating a full test dataset, we will only add two test points, and study how the perceptron, trained on the 14 points of the training set classifies these new points.
+
 ```{r, fig.height=4, fig.width=4}
+par(mfcol=c(1,1))
+test.patterns <- cbind(matrix(runif(2*1000, -2, 2), 1000), rep(1, 1000))
 v.u <- eval.perceptron.2L(w.final.2L$w.in, w.final.2L$w.out, patterns, T)
-points(1,-1, pch=21, col=1, cex=1.5, lwd=2)
-points(-1,-1.5, pch=21, col=1, cex=1.5, lwd=2)
+points(sqrt(2)/2,-sqrt(2)/2, pch=21, col=1, cex=1.5, lwd=2)
+points(1.5,0, pch=21, col=1, cex=1.5, lwd=2)
 axis(1); axis(2, las=2)
 
 ```
@@ -165,4 +175,15 @@ Consider a new point in the above classification task, shown now in black. These
 * What is the classification of the 2-layer network? Try to use different initial conditions or different number of hidden neurons (between e.g., 3 and 20), but always train the network using the original 14 points, and not the two new points! The new points are only added when you evaluate the network! [4 points]
 * What is the problem here? What would be the solution to this problem? How the brain can possibly solve this problem? [3 points]
 
+
+To visualise the classification boundaries, you can generate a large set of test points and evaluate the network's predictions:
+
+```{r, fig.height=4, fig.width=4}
+
+par(mfcol=c(1,1))
+test.patterns <- cbind(matrix(runif(2*1000, -2, 2), 1000), rep(1, 1000))
+v.u <- eval.perceptron.2L(w.final.2L$w.in, w.final.2L$w.out, test.patterns, T)
+axis(1); axis(2, las=2)
+
+```
 

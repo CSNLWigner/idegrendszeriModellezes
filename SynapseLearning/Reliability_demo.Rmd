@@ -12,7 +12,7 @@ knitr::opts_chunk$set(echo = TRUE)
 ```
 
 
-This is a demo for illustrating the response of integrate and fire neurons to synaptic input with different release probabilities. We have a single postsynaptic neuron, and $n=\{64, 16384\}$ presynaptic cells, all firing with $r=2$ Hz and having release probability $p=0.2$. The strength of the synapses is scaled with the number of neurons, so the mean synaptic drive is kept constant.
+This is a demo for illustrating the response of integrate and fire neurons to synaptic input with different release probabilities. We have a single postsynaptic neuron, and $n=\{64, 16384\}$ presynaptic cells, all firing with $r=2$ Hz and having release probability $p=0.2$. These values are similar to the values found in the hippocampus. The strength of the synapses is scaled with the number of neurons, so the mean synaptic drive of our postsynaptic cell is kept constant.
 
 We first simulate the net presynaptic spike train.
 
@@ -74,4 +74,24 @@ sds <- apply(vpost, 1, sd)
 matplot(vpost, t="l", lty=1, axes=F, xlab="time (ms)", ylab="voltage (mV)"); axis(1); axis(2, las=2)
 ```
 
-The task is to calculate how the variance of the membrane potential (across trials) depends on the number of neurons. Don't forget to interpret the results!
+## Homework
+
+The task is to calculate how the variance of the membrane potential (across trials) depends on the number of presynaptic neurons. In particular, we are interested in the question whether increasing the release probability would lead to more accurate computations in neuronal circuits. 
+
+* Calculate the variance of the postsynaptic membrane potential accross trials! Average it along the 1s long trace. [3p]
+
+* Change the number of presynaptic neurons (between 64 and 16000), and calculate the variance again! [2p]
+
+* Plot the variance in the function ofthe number of presynaptic neurons. If you can, derive a functional relationship between the two quantities. [4p]
+
+* What is the number of presynaptic neurons for a typical hippocampal CA3 pyramidal cell? What is the variability there? [2p]
+
+* How the variance would change if we increased the release probability with $\epsilon << 1$? [3p]
+
+* From computational and coding purposes, is it worth increasing the reliability of the synapses? Why? [3p]
+
+* How the results change if you also consider inhibition? As a first approximation assume that inhibitory neurons also have low release probability. [3p]
+
+
+
+

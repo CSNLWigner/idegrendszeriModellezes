@@ -165,7 +165,7 @@ eval.perceptron.2L <- function(w.in, w.out, patterns, graphics=T){
   vv <- round(sigm(v.u, 1, 1000, 0.5))
 
   if (graphics){
-    par(mfcol=c(1,1))
+    # par(mfcol=c(1,1))
     par(mar=c(4,4,1,1))
     plot(patterns[,1], patterns[,2], pch=16, col=blueRed2(v.u), xlab="", ylab="", cex=0.7, axes=F, xlim=c(-m, m), ylim=c(-m, m))
   }
